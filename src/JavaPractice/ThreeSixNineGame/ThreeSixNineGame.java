@@ -1,3 +1,4 @@
+package JavaPractice.ThreeSixNineGame;
 
 public class ThreeSixNineGame {
 
@@ -32,19 +33,18 @@ public class ThreeSixNineGame {
             // 오답률에 의한 랜덤확률 생성
             // 0또는 1이 나오는기준에 오답률을 반영해라
             double rate = Math.random(); // 3 34 83
+            String result = do369(i);
             if(rate < players[(i-1)%4].getIncorrectRate()){
                 // 오답을 말하는 경우
-                int binaryResult = (Math.random() < 0.5) ? 1 : 0;
-                if(binaryResult == 1) {
-                    System.out.println(players[(i - 1) % 4].getName() + "님이 박수를 쳐야하는데 숫자를 얘기했습니다.");
-                    break;
-                }else if(binaryResult == 1){
+                if(result.equals(Integer.toString(i))) {
                     System.out.println(players[(i - 1) % 4].getName() + "님이 숫자를 얘기해야하는데 박수를 쳤습니다.");
                     break;
+                }else{
+                    System.out.println(players[(i - 1) % 4].getName() + "님이 박수를 쳐야하는데 숫자를 얘기했습니다.");
+                    break;
                 }
-                break;
             }else{
-                System.out.println(players[(i-1)%4].getName() + ": " + do369(i));
+                System.out.println(players[(i-1)%4].getName() + ": " + result);
             }
             i+=1;
         }
@@ -52,10 +52,10 @@ public class ThreeSixNineGame {
 
     public static void main(String[] args) {
         Player[] players = new Player[4];
-        players[0] = new Player("상철",0.4);
+        players[0] = new Player("상철",0.1);
         players[1] = new Player("영철",0.2);
         players[2] = new Player("영숙",0.1);
-        players[3] = new Player("동칠",0.5);
+        players[3] = new Player("동칠",0.2);
         new ThreeSixNineGame().playGame(players);
     }
 }
