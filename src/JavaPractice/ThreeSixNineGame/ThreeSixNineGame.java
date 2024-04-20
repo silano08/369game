@@ -1,5 +1,9 @@
 package JavaPractice.ThreeSixNineGame;
 
+import JavaPractice.ThreeSixNineGame.Rule.Busan369;
+import JavaPractice.ThreeSixNineGame.Rule.ClapRule;
+import JavaPractice.ThreeSixNineGame.Rule.Seoul369;
+
 public class ThreeSixNineGame {
 
     /**
@@ -27,13 +31,13 @@ public class ThreeSixNineGame {
      ..중략..
      상철: 100
      */
-    public void playGame(Player[] players) {
+    public void playGame(Player[] players, ClapRule rule) {
         int i=1;
         while (true){
             // 오답률에 의한 랜덤확률 생성
             // 0또는 1이 나오는기준에 오답률을 반영해라
             double rate = Math.random(); // 3 34 83
-            String result = do369(i);
+            String result = rule.do369(i);
             if(rate < players[(i-1)%4].getIncorrectRate()){
                 // 오답을 말하는 경우
                 if(result.equals(Integer.toString(i))) {
@@ -53,9 +57,14 @@ public class ThreeSixNineGame {
     public static void main(String[] args) {
         Player[] players = new Player[4];
         players[0] = new Player("상철",0.1);
-        players[1] = new Player("영철",0.2);
+        players[1] = new Player("영철",0.1);
         players[2] = new Player("영숙",0.1);
-        players[3] = new Player("동칠",0.2);
-        new ThreeSixNineGame().playGame(players);
+        players[3] = new Player("동칠",0.01);
+
+        Context context = new Context();
+
+        context.set369RuleSeoul(new Busan369());
+
+        new ThreeSixNineGame().playGame(players, context.rule);
     }
 }

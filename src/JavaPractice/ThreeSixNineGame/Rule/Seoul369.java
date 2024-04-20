@@ -1,8 +1,11 @@
 package JavaPractice.ThreeSixNineGame.Rule;
 
-class Seoul369 implements ClapRule {
+public class Seoul369 implements ClapRule {
     @Override
     public String do369(int number) {
-        return null;
+        String numStr = Integer.toString(number);
+
+        if(numStr.contains("3") || numStr.contains("6") || numStr.contains("9")) return "clap";
+        return numStr;
     }
 }
