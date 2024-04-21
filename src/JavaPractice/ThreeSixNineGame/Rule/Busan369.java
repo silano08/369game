@@ -8,14 +8,17 @@ public class Busan369 implements ClapRule {
         String numStr = Integer.toString(number);
 
         String result = "";
-        for(int i=0; i<numStr.length(); i++){
-            if(numStr.contains("3") || numStr.contains("6") || numStr.contains("9")) result+= "clap";
+        for (int i = 0; i < numStr.length(); i++) {
+            char c = numStr.charAt(i);
+            if (c == '3' || c == '6' || c == '9') {
+                result += "clap";
+            }
         }
 
-        if(result.equals("")){
+        // '3', '6', '9' 가 한번도 포함되지 않았다면, 숫자를 문자열로 반환
+        if (result.isEmpty()) {
             return numStr;
-        }else{
-            return result;
         }
+        return result;
     }
 }
