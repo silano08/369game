@@ -12,8 +12,18 @@ import static org.junit.jupiter.api.Assertions.*;
 class ThreeSixNineGameTest {
 
     @Test
-    void testPlayGame() {
+    public void testGameEndsAtThirteen() {
+        Player[] players = { new Player("상철", 0.1), new Player("영철", 0.1), new Player("영숙", 0.1), new Player("동칠", 0.1) };
+        Context context = new Context();
+        context.set369Rule(new Seoul369());
+        when(context.do369(13)).thenReturn("clap");
+        RandomProvider mockRandomProvider = mock(RandomProvider.class);
+        when(mockRandomProvider.getRandom()).thenReturn(0.05);
 
+        ThreeSixNineGame game = new ThreeSixNineGame(mockRandomProvider,context);
+        game.playGame(players);
+
+        verify(context, atLeastOnce()).do369(13);
     }
 
     @Test
