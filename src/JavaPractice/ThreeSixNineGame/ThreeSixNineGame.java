@@ -6,17 +6,13 @@ import JavaPractice.ThreeSixNineGame.Rule.Seoul369;
 
 public class ThreeSixNineGame {
 
-    /**
-     number 에 3,6,9가 포함되면 "clap", 아니면 입력받은 숫자를 String으로 리턴
-     do369(16) -> "clap"
-     do369(12) -> "12"
-     do369(33) -> "clap", 3이 두번나왔지만 clap은 한번
-     */
-    public String do369(int number) {
-        String numStr = Integer.toString(number);
 
-        if(numStr.contains("3") || numStr.contains("6") || numStr.contains("9")) return "clap";
-        return numStr;
+    private RandomProvider randomProvider;
+    private Context clapRule;
+
+    public ThreeSixNineGame(RandomProvider randomProvider, Context clapRule) {
+        this.randomProvider = randomProvider;
+        this.clapRule = clapRule;
     }
 
     /**
@@ -31,13 +27,13 @@ public class ThreeSixNineGame {
      ..중략..
      상철: 100
      */
-    public void playGame(Player[] players, ClapRule rule) {
+    public void playGame(Player[] players) {
         int i=1;
         while (true){
             // 오답률에 의한 랜덤확률 생성
             // 0또는 1이 나오는기준에 오답률을 반영해라
-            double rate = Math.random(); // 3 34 83
-            String result = rule.do369(i);
+            double rate = randomProvider.getRandom(); // 3 34 83
+            String result = clapRule.do369(i);
             if(rate < players[(i-1)%4].getIncorrectRate()){
                 // 오답을 말하는 경우
                 if(result.equals(Integer.toString(i))) {
@@ -54,7 +50,7 @@ public class ThreeSixNineGame {
         }
     }
 
-    public static void main(String[] args) {
+    public void main(String[] args) {
         Player[] players = new Player[4];
         players[0] = new Player("상철",0.1);
         players[1] = new Player("영철",0.1);
@@ -63,8 +59,9 @@ public class ThreeSixNineGame {
 
         Context context = new Context();
 
-        context.set369RuleSeoul(new Busan369());
+        context.set369Rule(new Busan369());
 
-        new ThreeSixNineGame().playGame(players, context.rule);
+        ThreeSixNineGame game = new ThreeSixNineGame(new RandomProvider(), context);
+        playGame(players);
     }
 }

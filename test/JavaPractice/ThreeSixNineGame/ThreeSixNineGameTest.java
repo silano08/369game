@@ -1,15 +1,19 @@
 package JavaPractice.ThreeSixNineGame;
 
 import JavaPractice.ThreeSixNineGame.Rule.Busan369;
+import JavaPractice.ThreeSixNineGame.Rule.ClapRule;
 import JavaPractice.ThreeSixNineGame.Rule.Seoul369;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ThreeSixNineGameTest {
 
     @Test
-    void playGame() {
+    void testPlayGame() {
+
     }
 
     @Test
