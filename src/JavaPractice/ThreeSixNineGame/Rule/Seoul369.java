@@ -8,4 +8,9 @@ public class Seoul369 implements ClapRule {
         if(numStr.contains("3") || numStr.contains("6") || numStr.contains("9")) return "clap";
         return numStr;
     }
+
+    @Override
+    public String getLocalName() {
+        return "서울";
+    }
 }

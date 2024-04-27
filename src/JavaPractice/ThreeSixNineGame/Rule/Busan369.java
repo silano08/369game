@@ -21,4 +21,9 @@ public class Busan369 implements ClapRule {
         }
         return result;
     }
+
+    @Override
+    public String getLocalName() {
+        return "부산";
+    }
 }

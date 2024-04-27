@@ -4,10 +4,9 @@ import JavaPractice.ThreeSixNineGame.Rule.Busan369;
 import JavaPractice.ThreeSixNineGame.Rule.ClapRule;
 import JavaPractice.ThreeSixNineGame.Rule.Seoul369;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
-import static org.mockito.Mockito.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 class ThreeSixNineGameTest {
 
@@ -35,8 +34,9 @@ class ThreeSixNineGameTest {
         // ThreeSixNineGame 인스턴스 생성
         ThreeSixNineGame game = new ThreeSixNineGame(mockRandomProvider, mockContext);
 
+        ClapCounter clapCounter = new ClapCounter();
         // 테스트 실행
-        game.playGame(players);
+        game.playGame(players,clapCounter);
 
         // do369 메서드 호출 검증
         verify(mockContext, times(100)).do369(anyInt());
@@ -45,7 +45,7 @@ class ThreeSixNineGameTest {
     }
 
     @Test
-    void ruleChangeTest(){
+    void ruleChangeTest() {
 
         Context context = new Context();
 
