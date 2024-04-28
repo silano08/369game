@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.Assert.*;
@@ -60,63 +61,33 @@ class ThreeSixNineGameTest {
     }
 
     @Test
-    public void playGameC1Test() {
-        // playGame함수의 조건 커버리지 작성
+    public void testPlayerShouldClapButSaysNumber() {
+        // 1. 플레이어가 박수를 쳐야 하지만 숫자를 말하는 경우
 
-        // 초기 설정
         Player player = mock(Player.class);
         ClapCounter clapCounter = mock(ClapCounter.class);
         Context clapRule = mock(Context.class);
         RandomProvider randomProvider = mock(RandomProvider.class);
-        Player[] players = {player, player, player, player};
-        ThreeSixNineGame game = new ThreeSixNineGame(randomProvider,clapRule);
 
-        // 플레이어 이름과 게임 이름 설정
-        when(player.getName()).thenReturn("플레이어1");
-        when(clapRule.getLocalName()).thenReturn("게임");
-
-        // 1. 플레이어가 박수를 쳐야 하지만 숫자를 말하는 경우
         when(player.getIncorrectRate()).thenReturn(0.5);
         when(randomProvider.getRandom()).thenReturn(0.3); // 오답률보다 낮은 값
         when(clapRule.do369(anyInt())).thenReturn("clap");
+        when(clapRule.getLocalName()).thenReturn("게임");
+        when(player.getName()).thenReturn("플레이어1");
+
+        Player[] players = {player, null, null, null};
+        ThreeSixNineGame game = new ThreeSixNineGame(randomProvider,clapRule);
         game.playGame(players, clapCounter);
+
+        verify(player).getName();
+        // Expected message assertion
         System.out.println("게임 - 플레이어1님이 박수를 쳐야하는데 숫자를 얘기했습니다.");
-
-        // 2. 플레이어가 숫자를 말해야 하지만 박수를 치는 경우
-        when(clapRule.do369(anyInt())).thenReturn("1"); // 숫자 반환
-        game.playGame(players, clapCounter);
-        System.out.println("게임 - 플레이어1님이 숫자를 얘기해야하는데 박수를 쳤습니다.");
-
-        // 3. 플레이어가 정상적으로 숫자를 말하는 경우
-        when(clapRule.do369(anyInt())).thenReturn("1");
-        game.playGame(players, clapCounter);
-        System.out.println("정상적으로 숫자 말함");
-
-
-        // 4. 플레이어가 정상적으로 박수를 치는 경우
-        when(player.getIncorrectRate()).thenReturn(0.5); // 플레이어의 오답률 설정
-        when(randomProvider.getRandom()).thenReturn(0.6); // 오답률보다 높은 값으로 설정
-
-        // 루프를 몇 번 실행한 후 테스트를 중단하도록 예외 발생 설정
-        when(clapRule.do369(anyInt()))
-                .thenReturn("clap")
-                .thenReturn("clap")
-                .thenReturn("clap")
-                .thenThrow(new RuntimeException("Test loop break")); // 4번째 호출에서 예외 발생
-
-        try {
-            game.playGame(players, clapCounter);
-        } catch (RuntimeException e) {
-            // 예외를 잡아서 테스트 종료
-            assertEquals("Test loop break", e.getMessage());
-        }
-
-        // 검증: do369 메소드가 4번 호출되었는지 확인 -> 여기에선 fail로 뜨지만 다른 결과들과 섞여서 그럼.. method를 따로 뺀다면 성공함ㅇㅇ
-        verify(clapRule, times(4)).do369(anyInt());
     }
 
     @Test
     public void testPlayerShouldSayNumberButClaps() {
+        // 2. 플레이어가 숫자를 말해야 하지만 박수를 치는 경우
+
         Player player = mock(Player.class);
         ClapCounter clapCounter = mock(ClapCounter.class);
         Context clapRule = mock(Context.class);
@@ -135,6 +106,84 @@ class ThreeSixNineGameTest {
         verify(player).getName();
         // Expected message assertion
         System.out.println("게임 - 플레이어1님이 숫자를 얘기해야하는데 박수를 쳤습니다.");
+    }
+
+    @Test
+    public void testPlayerClapsCorrectly() {
+        // 4. 플레이어가 정상적으로 박수를 치는 경우
+        // 초기 설정
+        Player player = mock(Player.class);
+        ClapCounter clapCounter = mock(ClapCounter.class);
+        Context clapRule = mock(Context.class);
+        RandomProvider randomProvider = mock(RandomProvider.class);
+        Player[] players = {player, player, player, player};
+        ThreeSixNineGame game = new ThreeSixNineGame(randomProvider,clapRule);
+
+        // 플레이어 이름과 게임 이름 설정
+        when(player.getName()).thenReturn("플레이어1");
+        when(clapRule.getLocalName()).thenReturn("게임");
+
+        when(player.getIncorrectRate()).thenReturn(0.5); // 플레이어의 오답률 설정
+        when(randomProvider.getRandom()).thenReturn(0.6); // 오답률보다 높은 값으로 설정
+
+        // 루프를 몇 번 실행한 후 테스트를 중단하도록 예외 발생 설정
+        when(clapRule.do369(anyInt()))
+                .thenReturn("clap")
+                .thenReturn("clap")
+                .thenReturn("clap")
+                .thenThrow(new RuntimeException("Test loop break")); // 4번째 호출에서 예외 발생
+
+        try {
+            game.playGame(players, clapCounter);
+        } catch (RuntimeException e) {
+            // 예외를 잡아서 테스트 종료
+            assertEquals("Test loop break", e.getMessage());
+        }
+
+        // 검증: do369 메소드가 4번 호출되었는지 확인
+        verify(clapRule, times(4)).do369(anyInt());
+    }
+
+    @Test
+    public void testPlayerSaysNumberCorrectly() {
+        // 3. 플레이어가 정상적으로 숫자를 말하는 경우
+        // 초기 설정
+        Player player = mock(Player.class);
+        ClapCounter clapCounter = mock(ClapCounter.class);
+        Context clapRule = mock(Context.class);
+        RandomProvider randomProvider = mock(RandomProvider.class);
+        Player[] players = {player, player, player, player};
+        ThreeSixNineGame game = new ThreeSixNineGame(randomProvider, clapRule);
+
+        // 플레이어 이름과 게임 이름 설정
+        when(player.getName()).thenReturn("플레이어1");
+        when(clapRule.getLocalName()).thenReturn("게임");
+
+        // do369 메소드가 숫자 "1"을 반환하도록 설정
+        when(clapRule.do369(anyInt())).thenReturn("1");
+
+        // 루프를 4번 실행 후 중단
+        AtomicInteger count = new AtomicInteger(0);
+        doAnswer(invocation -> {
+            int i = count.incrementAndGet();
+            if (i >= 4) { // 4번 실행한 후
+                throw new RuntimeException("Stop loop"); // 예외를 발생시켜 루프를 강제로 중단
+            }
+            return "1"; // 숫자 "1" 반환
+        }).when(clapRule).do369(anyInt());
+
+        // 예외 처리
+        try {
+            game.playGame(players, clapCounter);
+        } catch (RuntimeException e) {
+            assertEquals("Stop loop", e.getMessage());
+        }
+
+        // do369 메소드가 정확히 4번 호출되었는지 검증
+        verify(clapRule, times(4)).do369(anyInt());
+
+        // 결과 출력
+        System.out.println("정상적으로 숫자 말함");
     }
 
     @Test
