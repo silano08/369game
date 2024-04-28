@@ -1,7 +1,6 @@
 package JavaPractice.ThreeSixNineGame;
 
 import JavaPractice.ThreeSixNineGame.Rule.Busan369;
-import JavaPractice.ThreeSixNineGame.Rule.ClapRule;
 import JavaPractice.ThreeSixNineGame.Rule.Seoul369;
 
 public class ThreeSixNineGame {
@@ -40,12 +39,12 @@ public class ThreeSixNineGame {
                     System.out.println(clapRule.getLocalName() + " - " + players[(i - 1) % 4].getName() + "님이 숫자를 얘기해야하는데 박수를 쳤습니다.");
                     break;
                 } else {
-                    System.out.println(clapRule.getLocalName() + " - " +players[(i - 1) % 4].getName() + "님이 박수를 쳐야하는데 숫자를 얘기했습니다.");
+                    System.out.println(clapRule.getLocalName() + " - " + players[(i - 1) % 4].getName() + "님이 박수를 쳐야하는데 숫자를 얘기했습니다.");
                     break;
                 }
             } else {
                 clapCounter.countClap(result);
-                System.out.println(clapRule.getLocalName() + " - " +players[(i - 1) % 4].getName() + ": " + result);
+                System.out.println(clapRule.getLocalName() + " - " + players[(i - 1) % 4].getName() + ": " + result);
             }
             i += 1;
         }
@@ -71,8 +70,8 @@ public class ThreeSixNineGame {
         ThreeSixNineGame game2 = new ThreeSixNineGame(new RandomProvider(), context2);
 
         // 각 게임을 별도의 스레드에서 실행
-        Thread thread1 = new Thread(() -> game1.playGame(players,clapCounter), "BusanGameThread");
-        Thread thread2 = new Thread(() -> game2.playGame(players,clapCounter), "SeoulGameThread");
+        Thread thread1 = new Thread(() -> game1.playGame(players, clapCounter), "BusanGameThread");
+        Thread thread2 = new Thread(() -> game2.playGame(players, clapCounter), "SeoulGameThread");
 
         // 스레드 시작
         thread1.start();
